@@ -1,16 +1,22 @@
 import errno
+import json
 import os
 import shutil
-
-backup_list = [
-    {"root_dir": "/home/srlabs/srlabs/autobahn_manager", "target_dir": "backup_arfancode_autobahn_manager"},
-]
-
-contains = ["arfancode"]
-exactly = [".env"]
+import sys
 
 
-def check_contains(str):
+def read_configuration(file):
+    with open(file, "r") as f:
+        # Reading from file
+        data = json.loads(f.read())
+
+        backup_list = data.get("backup_list")
+        contains = data.get("backup_condition").get("contains")
+        exactly = data.get("backup_condition").get("exactly")
+
+        return backup_list, contains, exactly
+
+def check_contains(str, contains):
     for c in contains:
         if c in str:
             return True
@@ -18,7 +24,7 @@ def check_contains(str):
     return False
 
 
-def check_exactly(str):
+def check_exactly(str, exactly):
     for c in exactly:
         if c == str:
             return True
@@ -26,13 +32,13 @@ def check_exactly(str):
     return False
 
 
-def copy_backup(root_dir, target_dir):
+def copy_backup(root_dir, target_dir, contains, exactly):
     for root, dirs, files in os.walk(root_dir):
         for name in files:
             absolute_path = os.path.join(root, name)
             trimmed = absolute_path[len(root_dir):]
 
-            if check_contains(trimmed) or check_exactly(name):
+            if check_contains(trimmed, contains) or check_exactly(name, exactly):
                 print(absolute_path)
 
                 try:
@@ -46,5 +52,13 @@ def copy_backup(root_dir, target_dir):
                     shutil.copy(absolute_path, target_dir + trimmed)
 
 
+configuration_file = "default.json"
+if len(sys.argv) == 2:
+    configuration_file = sys.argv[1]
+
+backup_list, contains, exactly = read_configuration(configuration_file)
+
+
 for backup in backup_list:
-    copy_backup(backup.get("root_dir"), backup.get("target_dir"))
+    copy_backup(backup.get("root_dir"), backup.get("target_dir"), contains, exactly)
+

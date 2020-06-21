@@ -16,17 +16,18 @@ def read_configuration(file):
 
         return backup_list, contains, exactly
 
-def check_contains(str, contains):
+
+def check_contains(string, contains):
     for c in contains:
-        if c in str:
+        if c in string:
             return True
 
     return False
 
 
-def check_exactly(str, exactly):
+def check_exactly(string, exactly):
     for c in exactly:
-        if c == str:
+        if c == string:
             return True
 
     return False
@@ -52,13 +53,17 @@ def copy_backup(root_dir, target_dir, contains, exactly):
                     shutil.copy(absolute_path, target_dir + trimmed)
 
 
-configuration_file = "default.json"
-if len(sys.argv) == 2:
-    configuration_file = sys.argv[1]
+def main():
+    configuration_file = "default.json"
+    if len(sys.argv) == 2:
+        configuration_file = sys.argv[1]
 
-backup_list, contains, exactly = read_configuration(configuration_file)
+    backup_list, contains, exactly = read_configuration(configuration_file)
+
+    for backup in backup_list:
+        copy_backup(backup.get("root_dir"), backup.get("target_dir"), contains, exactly)
 
 
-for backup in backup_list:
-    copy_backup(backup.get("root_dir"), backup.get("target_dir"), contains, exactly)
-
+if __name__ == "__main__":
+    # execute only if run as a script
+    main()

@@ -13,8 +13,26 @@ With this script I can copy those file and put it in a folder.
 Create file default.json as your settings, use sample-default.json as your reference
 to create that file.
 
+Sample-default.json
+```json
+{
+  "backup_list": [
+    {
+      "root_dir": "/home/user/folder",
+      "target_dir": "backup_location"
+    }
+  ],
+
+  "backup_condition": {
+    "contains": ["yourpattern"],
+    "exactly": ["exact_file.txt"]
+  }
+}
 ```
-$ python main.py 
+
+Run the script
+```
+$ python main.py [default.json]
 ```
 
 

@@ -7,7 +7,7 @@
   ],
 
   "backup_condition": {
-    "contains": ["string_contains"],
+    "contains": ["yourpattern"],
     "exactly": ["exact_file.txt"]
   }
 }

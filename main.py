@@ -20,9 +20,10 @@ def read_configuration(file):
 
 
 def check_contains(string, contains):
-    for c in contains:
-        if c in string:
-            return True
+    if contains:
+        for c in contains:
+            if c in string:
+                return True
 
     return False
 
